@@ -105,5 +105,22 @@ ggplot(data = BH, aes(x = Day, y = temperature_anomaly, color = Entity)) +
   scale_color_manual(values = c("black", "red"))
 
 
-##Prompt number 2  
+##Prompt number 2 
 
+
+US <- datCO2 %>%
+  filter(datCO2$Entity == "United States")
+
+Canada <- datCO2 %>%
+  filter(datCO2$Entity == "Canada")
+
+Mexico <- datCO2 %>%
+  filter(datCO2$Entity == "Mexico")
+
+total_us <- sum(US$CO2)
+
+total_mexico <- sum(Mexico$CO2)
+
+total_canda <- sum(Canada$CO2)
+
+ggplot()
