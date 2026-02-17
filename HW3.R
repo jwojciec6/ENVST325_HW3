@@ -106,8 +106,6 @@ ggplot(data = BH, aes(x = Day, y = temperature_anomaly, color = Entity)) +
 
 
 ##Prompt number 2 
-
-
 US <- datCO2 %>%
   filter(datCO2$Entity == "United States")
 
@@ -121,6 +119,93 @@ total_us <- sum(US$CO2)
 
 total_mexico <- sum(Mexico$CO2)
 
-total_canda <- sum(Canada$CO2)
+total_canada <- sum(Canada$CO2)
 
-ggplot()
+totals <- data.frame(
+  Country = c("United States", "Canada", "Mexico"),
+  total_CO2 = c(total_us, total_canada, total_mexico))
+
+totals$total_CO2 <- totals$total_CO2 /1000000000
+
+ggplot(totals, aes(x = Country, y = total_CO2)) +
+  geom_col(fill = "steelblue") +
+  labs(y = "Total fossil fuel emissions (billions of tons CO2)",
+       x = "Country",
+       title ="Total CO2 emissions by country")
+
+##Question 1
+
+Poland <- datCO2 %>%
+  filter(datCO2$Entity == "Poland")
+
+##Divides emissions by 1 million
+#Poland$CO2 <- Poland$CO2 / 1000000
+
+ggplot(Poland, aes(x = Year, y = CO2),)+
+  geom_point(color = "blue") +
+  labs(x = "Year", y = "CO2 Emmsions (millions of tons)", title =
+         "Poland CO2 Emissions by Year")
+
+##Question 2
+
+world_temp <- cc %>%
+  filter(cc$Entity == "World")
+
+world_CO2 <- datCO2 %>%
+  filter(datCO2$Entity == "World")
+
+world_temp$Day <- ymd(world_temp$Day)
+
+ggplot(world_temp, aes(x = Day, y = temperature_anomaly)) +
+  geom_point(color = "blue") +
+  labs(x = "Year", y = "Temperature Anomaly °C", 
+       title = "World Temperature Anomalies")
+
+#convert to billions of tons 
+#world_CO2$CO2 <- world_CO2$CO2 / 1000000000
+
+ggplot(world_CO2, aes(x = Year, y = CO2)) +
+  geom_line(color = "blue") +
+  labs(x = "Year", y = "CO2 Emissions (billions of tons)", 
+       title = "World CO2 Emissions per Year")
+
+
+##Question 3
+
+#need for labels without legend to look good.
+install.packages("ggrepel")
+library(ggrepel)
+
+nuclear <- read.csv("/cloud/project/activity03/nuclear-energy-generation.csv")
+
+#combine nations data needed into one data frame
+nuclear_nations <- nuclear %>%
+  filter(nuclear$Entity == "France"|
+         nuclear$Entity == "Japan"|
+         nuclear$Entity == "Sweden"|
+         nuclear$Entity == "United Kingdom"|
+         nuclear$Entity == "Germany")
+
+#gets last year to use for labeling
+last_year <- nuclear_nations %>%
+  group_by(Entity) %>%
+  slice_max(Year)
+
+ggplot(nuclear_nations) +
+  aes(x = Year, y = Nuclear, color = Entity) +
+  geom_point() +
+  geom_line() +
+  #creates labels
+  geom_label_repel(aes(label = Entity),
+                   data = last_year,
+                   nudge_x = 3,
+                   nudge_y = 15,
+                   segment.color = "gray50",
+                   fontface = "bold",
+                   size = 3) +
+  labs(x = "Year", y = "Terawatt-hours (TWh)",
+       title ="Nuclear power generation") +
+  scale_color_manual(values = c("steelblue", "firebrick4","darkgoldenrod4", "aquamarine4", "darkorchid4" )) +
+  theme(legend.position = "none") + 
+  #extendeds graph so labels can be read
+  xlim(NA, 2035)
