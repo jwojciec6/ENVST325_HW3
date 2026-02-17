@@ -1,6 +1,7 @@
 # ENVST 325 HW 3
 # John Wojciechowski
 #2/17/2026
+
 install.packages(c("ggplot2", "dplyr"))
 library(ggplot2)
 library(dplyr)
@@ -125,6 +126,7 @@ totals <- data.frame(
   Country = c("United States", "Canada", "Mexico"),
   total_CO2 = c(total_us, total_canada, total_mexico))
 
+#divide total emissions by 1 billion 
 totals$total_CO2 <- totals$total_CO2 /1000000000
 
 ggplot(totals, aes(x = Country, y = total_CO2)) +
@@ -139,7 +141,7 @@ Poland <- datCO2 %>%
   filter(datCO2$Entity == "Poland")
 
 ##Divides emissions by 1 million
-#Poland$CO2 <- Poland$CO2 / 1000000
+Poland$CO2 <- Poland$CO2 / 1000000
 
 ggplot(Poland, aes(x = Year, y = CO2),)+
   geom_point(color = "blue") +
@@ -148,12 +150,14 @@ ggplot(Poland, aes(x = Year, y = CO2),)+
 
 ##Question 2
 
+#creating seprate data frames with only world data
 world_temp <- cc %>%
   filter(cc$Entity == "World")
 
 world_CO2 <- datCO2 %>%
   filter(datCO2$Entity == "World")
 
+#formatting the date column for proper graph implementation
 world_temp$Day <- ymd(world_temp$Day)
 
 ggplot(world_temp, aes(x = Day, y = temperature_anomaly)) +
@@ -162,7 +166,7 @@ ggplot(world_temp, aes(x = Day, y = temperature_anomaly)) +
        title = "World Temperature Anomalies")
 
 #convert to billions of tons 
-#world_CO2$CO2 <- world_CO2$CO2 / 1000000000
+world_CO2$CO2 <- world_CO2$CO2 / 1000000000
 
 ggplot(world_CO2, aes(x = Year, y = CO2)) +
   geom_line(color = "blue") +
